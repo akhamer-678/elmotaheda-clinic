@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", async function () {
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
   const specialtySelect = document.getElementById("specialty");
+  if (!specialtySelect) {
+    console.warn("specialty select not found");
+    return;
+  }
   const doctorSelect = document.getElementById("doctor");
   const form = document.getElementById("bookingForm");
 
@@ -181,7 +185,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       const statusText = hasAvailable ? "متاح اليوم" : "مواعيد اليوم مكتملة";
 
       card.innerHTML = `
-        <img src="img/visitor.jpg" alt="doctor" />
+        <img src="img/istockphot.jpg" alt="doctor" />
         <h3>د. ${doc.doc_name}</h3>
         <p>${doc.doc_title}</p>
 

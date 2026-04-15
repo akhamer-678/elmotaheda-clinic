@@ -80,9 +80,9 @@
     <div class="header" id="header">
       <div class="container">
         <ul class="main-nav">
-          <li>
+          <!-- <li>
             <a href="#"> <i class=""></i>سجل حجوزاتي</a>
-          </li>
+          </li> -->
           <li>
             <a href="#available-doctors"> <i class=""></i>أطباء اليوم</a>
           </li>
@@ -117,30 +117,45 @@
     </div>
     <div class="landing" id="landing">
       <div class="container">
+        <div class="booking-steps">
+          <h3>احجز بكل سهوله في 3 خطوات</h3>
+
+          <div class="steps-wrapper">
+            <div class="step-card step1">
+              <span class="step-number">1</span>
+              <i class="fa-solid fa-stethoscope"></i>
+              <h4>اختر التخصص</h4>
+            </div>
+
+            <div class="step-card step2">
+              <span class="step-number">2</span>
+              <i class="fa-solid fa-user-doctor"></i>
+              <h4>اختر الطبيب</h4>
+            </div>
+
+            <div class="step-card step3">
+              <span class="step-number">3</span>
+              <i class="fa-solid fa-calendar-check"></i>
+              <h4>احجز الآن</h4>
+            </div>
+          </div>
+        </div>
         <div class="form">
           <form id="bookingForm">
-            <!-- التخصص -->
             <div class="input-group">
               <i class="fa-solid fa-stethoscope"></i>
               <select id="specialty" required>
                 <option disabled selected>اختر التخصص</option>
-                <!-- <option>قلب</option>
-                <option>عظام</option>
-                <option>عيون</option> -->
               </select>
             </div>
 
-            <!-- الطبيب -->
             <div class="input-group">
               <i class="fa-solid fa-user-doctor"></i>
               <select id="doctor" required disabled>
                 <option value="" disabled selected>اختر الطبيب</option>
-                <!-- <option>د / أحمد علي</option>
-                <option>د / محمد حسن</option> -->
               </select>
             </div>
 
-            <!-- زرار -->
             <button type="submit">احجز الآن</button>
           </form>
         </div>

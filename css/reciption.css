@@ -38,6 +38,14 @@
   padding: 8px;
   border-radius: 6px;
   border: 1px solid var(--color-primary);
+  
+}
+.filters button {
+cursor:pointer
+}
+.filters button i{
+  color: blue;
+
 }
 
 .table-wrapper {
@@ -98,20 +106,68 @@ td {
 }
 
 /* toast */
-.toast {
+/* Overlay زي المودال */
+.toast-overlay {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #333;
-  color: #fff;
-  padding: 10px 15px;
-  border-radius: 6px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   opacity: 0;
-  transition: 0.3s;
+  visibility: hidden;
+  transition: 0.3s ease;
+  z-index: 999999;
 }
 
-.toast .show {
+/* يظهر */
+.toast-overlay.show {
   opacity: 1;
+  visibility: visible;
+}
+
+/* الكارت نفسه */
+.toast-box {
+  background: #fff;
+  padding: 45px 35px;
+  border-radius: 16px;
+  text-align: center;
+  min-width: 280px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(20px);
+  transition: 0.3s ease;
+}
+
+.toast-overlay.show .toast-box {
+  transform: translateY(0);
+}
+
+/* الأيقونة */
+.toast-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+/* النص */
+.toast-text {
+  padding-bottom: 18px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.toast-btn {
+  margin-top: 15px;
+  padding: 8px 20px;
+  border: none;
+  background: #4caf50;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
 }
 tbody tr:nth-child(even) {
   background-color: #e9e8e8;
@@ -123,4 +179,92 @@ tbody tr:nth-child(odd) {
 
 tbody tr:hover {
   background-color: #bec9df;
+}
+/* تنسيقات ال MODAL  */
+/* الخلفية */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* اخفاء */
+.hidden {
+  display: none;
+}
+
+/* محتوى المودال */
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* عناصر الفورم */
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* الأزرار */
+.modal-content button {
+  margin-top: 12px;
+  padding: 10px;
+  width: 48%;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal-content button:first-of-type {
+  background: #28a745;
+  color: white;
+}
+
+.modal-content button:last-of-type {
+  background: #dc3545;
+  color: white;
+}
+
+/* أنيميشن */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.logout-btn {
+  background: var(--color-primary-light);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.logout-btn:hover {
+  background: #ff4d4d;
+
+}
+.logout-btn i {
+  margin-left: 6px;
 }

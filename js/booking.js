@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", async function () {
   const timesContainer = document.getElementById("available-times");
   const form = document.querySelector(".booking-form");
   const message = document.getElementById("message");
+  const savedPhone = localStorage.getItem("user_phone");
+
+  if (savedPhone) {
+    document.getElementById("phone").value = savedPhone;
+  }
 
   let selectedSlotId = null;
   let selectedSlotData = null;
@@ -53,14 +58,18 @@ document.addEventListener("DOMContentLoaded", async function () {
   doctorSpecialty.textContent = "التخصص: " + doctor.specialties["spcial_name"];
 
   // ================= جلب المواعيد من ال view =================
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
 
   const { data: slots, error } = await mysupabase
     .from("doctor_availability")
     .select("*")
     .eq("doc_id", doctorId)
-    .gte("date", today.toISOString()); // ✅ للتأكد من البيانات القادمة
+    .gte("date", startOfDay.toISOString())
+    .lte("date", endOfDay.toISOString()); // ✅ للتأكد من البيانات القادمة
 
   if (error) {
     console.error(error);
@@ -117,6 +126,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     timesContainer.appendChild(btn);
+    if (!selectedSlotId) {
+      btn.classList.add("selected");
+      selectedSlotId = slot.slot_id;
+      selectedSlotData = slot;
+    }
   }
 
   if (!hasAvailable) {
@@ -124,16 +138,80 @@ document.addEventListener("DOMContentLoaded", async function () {
     form.style.display = "none";
   }
 
-  // ================= Toast =================
-  function showToast(text, type = "success") {
-    const toast = document.getElementById("toast");
-    toast.textContent = text;
-    toast.className = `toast show ${type}`;
-    setTimeout(() => {
-      toast.classList.remove("show");
-    }, 3000);
-  }
+  console.log("toast:", document.getElementById("toast"));
+  console.log("text:", document.getElementById("toast-text"));
 
+  // ======  جلب اسماء الشركات التعاقدات=======
+  async function loadContracts() {
+    const { data, error } = await mysupabase
+      .from("contracts")
+      .select("*")
+      .eq("is_active", true);
+
+    if (error) {
+      console.error("Error loading contracts:", error);
+      return;
+    }
+
+    const group = document.getElementById("contracts-group");
+
+    // تفريغ القديم لو فيه
+    group.innerHTML = "";
+
+    data.forEach((contract) => {
+      const option = document.createElement("option");
+      option.value = contract.id; // مهم نخلي القيمة id
+      option.textContent = contract.name;
+
+      group.appendChild(option);
+    });
+  }
+  loadContracts();
+
+  // ================= Toast =================
+
+  function showBookingModal(data) {
+    const modal = document.getElementById("booking-modal");
+
+    document.getElementById("modal-doctor").textContent =
+      "👨‍⚕️ الدكتور: " + data.doctor;
+
+    document.getElementById("modal-date").textContent =
+      "📅 " + data.date + " - " + data.time;
+
+    document.getElementById("modal-queue").textContent =
+      "🔢 رقمك في الدور: " + data.queue;
+
+    modal.classList.add("show");
+
+    // زرار تم
+    document.getElementById("modal-ok").onclick = () => {
+      window.location.href = `index.html`;
+    };
+
+    // زرار X
+    // document.querySelector(".close-modal").onclick = () => {
+    //   modal.classList.remove("show");
+    // };
+  }
+  function showToast(msg) {
+    const div = document.createElement("div");
+    div.innerText = msg;
+
+    div.style.position = "fixed";
+    div.style.bottom = "15px";
+    div.style.left = "50%";
+    div.style.transform = "translateX(-50%)";
+    div.style.background = "#fff";
+    div.style.color = "#e20004";
+    div.style.padding = "10px 20px";
+    div.style.borderRadius = "8px";
+    div.style.zIndex = "999999";
+
+    document.body.appendChild(div);
+
+    setTimeout(() => div.remove(), 2000);
+  }
   // ================= الحجز =================
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -146,7 +224,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     const patientName = document.getElementById("patient-name").value.trim();
     const patientPhone = document.getElementById("phone").value.trim();
     const paymentmethod = document.getElementById("payment").value.trim();
-
+    let contractId = null;
+    let paymentType = "cash"
+    if (paymentmethod !== "cash") {
+      contractId = paymentmethod;
+      paymentType = "contract"
+    }
     if (!patientName || !patientPhone) {
       alert("من فضلك املأ البيانات");
       return;
@@ -157,7 +240,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       .select("id")
       .eq("slot_id", selectedSlotId)
       .eq("patient_phone", patientPhone)
-      .in("status", ["pending", "confirmed"]);
+      .eq("patient_name", patientName)
+      .in("status", ["attended", "confirmed"]);
 
     if (existing.length > 0) {
       alert("حجزت نفس الميعاد قبل كده");
@@ -177,21 +261,31 @@ document.addEventListener("DOMContentLoaded", async function () {
       alert("الموعد اكتمل");
       return;
     }
-
+    // حساب عدد الطابور
+    const { count: queueCount } = await mysupabase
+      .from("bookings")
+      .select("*", { count: "exact", head: true })
+      .eq("slot_id", selectedSlotId)
+      .in("type", ["walk_in", "online"])
+      .in("status", ["confirmed", "attended"]);
     const { error: insertError } = await mysupabase.from("bookings").insert([
       {
         doctor_id: doctorId,
         slot_id: selectedSlotId,
         patient_name: patientName,
         patient_phone: patientPhone,
-        contract: paymentmethod,
-        status: "pending",
+        contract_id: contractId,
+        payment_method: paymentType,
+        status: "confirmed",
+        type: "online",
+        priority: 2,
+        queue_num: queueCount + 1,
       },
     ]);
 
     if (insertError) {
       console.error(insertError);
-      showToast("فشل الحجز", "error");
+      // showToast("فشل الحجز", "error");
       return;
     }
 
@@ -207,8 +301,12 @@ document.addEventListener("DOMContentLoaded", async function () {
       hour: "2-digit",
       minute: "2-digit",
     });
-
-    showToast(`تم الحجز ✅ ${formattedDate} - ${formattedTime}`);
+    showBookingModal({
+      doctor: doctor["doc_name"],
+      date: formattedDate,
+      time: formattedTime,
+      queue: queueCount + 1,
+    });
     form.reset();
     console.log(
       "Slots raw:",
@@ -218,8 +316,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         has_available: s.has_available,
       })),
     );
-    setTimeout(() => {
-      window.location.href = `booking.html?doctor_id=${doctorId}`;
-    }, 1500);
+    // setTimeout(() => {
+    //   window.location.href = `index.html`;
+    // }, 4000);
   });
 });

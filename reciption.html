@@ -77,6 +77,10 @@
     <!-- محتوى صفحه الاستقبال  -->
     <div class="header">
       <div class="container">
+        <button class="logout-btn" onclick="logout()">
+          خروج
+          <i class="fa-solid fa-power-off"></i>
+        </button>
         <h2>لوحة الاستقبال</h2>
         <img src="img/logo.jpg" alt="" />
       </div>
@@ -95,7 +99,6 @@
         <input type="date" id="dateFilter" />
 
         <select id="statusFilter">
-          <option value="pending">قيد الانتظار</option>
           <option value="">الكل</option>
           <option value="confirmed">حضر</option>
           <option value="attended">تم الكشف</option>
@@ -107,12 +110,19 @@
           id="searchInput"
           placeholder="بحث بالاسم أو الموبايل"
         />
-        <button id="exportBtn">Export Excel</button>
-      </div>
+        <button id="exportBtn">
+          تحميل الملف
+          <i class="fa-solid fa-file-pdf"></i>
+        </button>
 
+        <button onclick="openAddModal()">
+          إضافة حجز
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
       <!-- Table -->
       <div class="table-wrapper">
-        <table>
+        <table id="table111">
           <thead>
             <tr>
               <th>التخصص</th>
@@ -121,19 +131,44 @@
               <th>المريض</th>
               <th>الهاتف</th>
               <th>الحالة</th>
+              <th>الدور</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
         </table>
       </div>
+    </div>
+    <div id="addModal" class="modal hidden">
+      <div class="modal-content">
+        <h3>إضافة مريض</h3>
 
-      <!-- Pagination -->
+        <input id="patientName" placeholder="اسم المريض" />
+        <input id="patientPhone" placeholder="رقم الهاتف" />
+
+        <!-- التخصص -->
+        <select id="modalSpecialty"></select>
+
+        <!-- الدكتور -->
+        <select id="modalDoctor"></select>
+
+        <!-- الميعاد -->
+        <select id="modalSlot"></select>
+        <!-- التعاقد -->
+        <select id="payment" name="payment" required>
+          <option value="" disabled selected hidden>اختر طريقة الدفع</option>
+
+          <option value="cash">نقدي</option>
+          <optgroup id="contracts-group" label="تعاقد"></optgroup>
+        </select>
+        <button onclick="submitWalkIn()">حجز</button>
+        <button onclick="closeAddModal()">إلغاء</button>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="js/loader.js"></script>
-    <script src="js/main.js"></script>
+    <!-- <script src="js/main.js"></script> -->
     <script src="js/reception.js"></script>
   </body>
 </html>
