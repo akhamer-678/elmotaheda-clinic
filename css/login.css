@@ -57,8 +57,13 @@ body {
 }
 
 @keyframes float {
-  0%,100% { transform: translateY(10px) rotate(45deg); }
-  50% { transform: translateY(-25px) rotate(-45deg); }
+  0%,
+  100% {
+    transform: translateY(10px) rotate(45deg);
+  }
+  50% {
+    transform: translateY(-25px) rotate(-45deg);
+  }
 }
 
 /* Layout */
@@ -97,18 +102,24 @@ body {
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
 
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 
   box-shadow:
-    0 10px 40px rgba(0,0,0,0.5),
-    inset 0 0 25px rgba(255,255,255,0.05);
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    inset 0 0 25px rgba(255, 255, 255, 0.05);
 
   animation: fadeUp 0.8s ease;
 }
 
 @keyframes fadeUp {
-  from { transform: translateY(25px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(25px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .glass-card h2 {
@@ -128,10 +139,9 @@ body {
   border: none;
   outline: none;
 
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   color: white;
 }
-
 
 /* Button */
 button {
@@ -149,13 +159,13 @@ button {
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Responsive */
 @media (max-width: 900px) {
   .wrapper {
-    flex-direction: column;
+    flex-direction: column-reverse;
     text-align: center;
   }
 
