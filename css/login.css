@@ -76,6 +76,7 @@ body {
   align-items: center;
   padding: 60px;
   color: white;
+ 
 }
 
 /* Branding */
@@ -171,6 +172,5 @@ button:hover {
 
   .glass-card {
     width: 90%;
-    margin-top: 30px;
   }
 }
