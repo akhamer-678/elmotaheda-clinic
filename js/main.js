@@ -74,11 +74,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   // =========================
   doctorsList.innerHTML = "<p>جاري تحميل الأطباء...</p>";
 
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-
-  const todayEnd = new Date();
-  todayEnd.setHours(23, 59, 59, 999);
+  const today = new Date().toISOString().split("T")[0];
 
   const { data, error } = await supabaseClient
     .from("doctor_availability")
@@ -95,9 +91,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     )
   `,
     )
-    .gte("date", todayStart.toISOString())
-    .lte("date", todayEnd.toISOString());
-
+    .gte("date", `${today}T00:00:00`)
+    .lt("date", `${today}T23:59:59`);
   if (error) {
     doctorsList.innerHTML = "<p>خطأ في تحميل البيانات</p>";
     return;
@@ -170,6 +165,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
 
+    console.log(data);
+
     doctors.forEach((doc) => {
       const hasAvailable = availabilityMap[doc.id] || false;
 
@@ -180,6 +177,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       card.innerHTML = `
         <img src="img/istockphot.jpg" alt="doctor" />
+        <div class="content">
         <h3>د. ${doc.doc_name}</h3>
         <p>${doc.doc_title}</p>
 
@@ -196,6 +194,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             ? `<button onclick="goToBooking('${doc.id}')">احجز الآن</button>`
             : ""
         }
+        </div>
       `;
 
       doctorsList.appendChild(card);

@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       "👨‍⚕️ الدكتور: " + data.doctor;
 
     document.getElementById("modal-date").textContent =
-      "📅 ميعاد الدكتور" + data.date + " - " + data.time;
+      "📅 ميعاد الدكتور " + data.date + " - " + data.time;
 
     document.getElementById("modal-queue").textContent =
       "🔢 رقمك في الدور: " + data.queue;
