@@ -58,18 +58,21 @@ document.addEventListener("DOMContentLoaded", async function () {
   doctorSpecialty.textContent = "التخصص: " + doctor.specialties["spcial_name"];
 
   // ================= جلب المواعيد من ال view =================
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
 
-  const endOfDay = new Date();
-  endOfDay.setHours(23, 59, 59, 999);
+  const now = new Date();
 
+  const today =
+    now.getFullYear() +
+    "-" +
+    String(now.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(now.getDate()).padStart(2, "0");
   const { data: slots, error } = await mysupabase
     .from("doctor_availability")
     .select("*")
     .eq("doc_id", doctorId)
-    .gte("date", startOfDay.toISOString())
-    .lte("date", endOfDay.toISOString()); // ✅ للتأكد من البيانات القادمة
+    .gte("date", `${today}T00:00:00`)
+    .lt("date", `${today}T23:59:59`);
 
   if (error) {
     console.error(error);
@@ -95,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    if (!available || slotDate < today) continue;
+    // if (!available || slotDate < today) continue;
 
     hasAvailable = true;
 
@@ -137,9 +140,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     message.innerHTML = `<p>نأسف .. تم أكتمال حالات الكشف</p>`;
     form.style.display = "none";
   }
-
-  console.log("toast:", document.getElementById("toast"));
-  console.log("text:", document.getElementById("toast-text"));
 
   // ======  جلب اسماء الشركات التعاقدات=======
   async function loadContracts() {

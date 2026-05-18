@@ -247,17 +247,17 @@ function getWhatsAppMessage(item, status) {
     minute: "2-digit",
   });
 
-  if (status === "attended") {
-    return `أهلاً ${item.patient}
-تم تأكيد حجزك بنجاح
+  //   if (status === "attended") {
+  //     return `أهلاً ${item.patient}
+  // تم تأكيد حجزك بنجاح
 
- الدكتور: ${item.doctor}
- التاريخ: ${dateFormatted}
+  //  الدكتور: ${item.doctor}
+  //  التاريخ: ${dateFormatted}
 
-يرجى الحضور قبل الموعد بـ 10 دقائق
+  // يرجى الحضور قبل الموعد بـ 10 دقائق
 
-*عيادات المتحدة الطبية تتمنى لكم الشفاء العاجل!*`;
-  }
+  // *عيادات المتحدة الطبية تتمنى لكم الشفاء العاجل!*`;
+  //   }
 
   if (status === "canceled") {
     return `أهلاً ${item.patient}
